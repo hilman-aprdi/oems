@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar dengan Dropdown</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR STYLES */
+        .sidebar {
+            width: 250px;
+            background: #2c3e50;
+            color: white;
+            height: 100vh;
+            position: fixed;
+            transition: all 0.3s ease;
+            box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar-header h2 {
+            font-size: 22px;
+            color: #ecf0f1;
+        }
+
+        .sidebar-menu {
+            padding: 15px 0;
+        }
+
+        .menu-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+        }
+
+        .menu-item:hover {
+            background: #34495e;
+            color: white;
+            border-left: 3px solid #3498db;
+        }
+
+        .menu-item.active {
+            background: #34495e;
+            color: white;
+            border-left: 3px solid #3498db;
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-item .arrow {
+            margin-left: auto;
+            transition: transform 0.3s;
+        }
+
+        .menu-item.active .arrow {
+            transform: rotate(90deg);
+        }
+
+        .menu-label {
+            padding: 15px 20px 5px;
+            font-size: 12px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* DROPDOWN STYLES */
+        .dropdown-menu {
+            max-height: 0;
+            overflow: hidden;
+            background: #1a252f;
+            transition: max-height 0.3s ease;
+        }
+
+        .dropdown-menu.show {
+            max-height: 300px;
+        }
+
+        .dropdown-item {
+            padding: 10px 20px 10px 45px;
+            display: flex;
+            align-items: center;
+            color: #95a5a6;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+
+        .dropdown-item:hover {
+            background: #2c3e50;
+            color: white;
+            border-left: 3px solid #e74c3c;
+        }
+
+        .dropdown-item i {
+            margin-right: 10px;
+            font-size: 12px;
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .toggle-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .content {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        p {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        /* RESPONSIVE STYLES */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 70px;
+                overflow: hidden;
+            }
+
+            .sidebar-header h2, 
+            .menu-item span, 
+            .menu-label,
+            .dropdown-item span {
+                display: none;
+            }
+
+            .menu-item {
+                justify-content: center;
+                padding: 15px;
+            }
+
+            .menu-item i {
+                margin-right: 0;
+                font-size: 18px;
+            }
+
+            .dropdown-item {
+                padding: 10px;
+                justify-content: center;
+            }
+
+            .dropdown-item i {
+                margin-right: 0;
+            }
+
+            .main-content {
+                margin-left: 70px;
+            }
+
+            .toggle-btn {
+                display: block;
+            }
+
+            .sidebar.expanded {
+                width: 250px;
+            }
+
+            .sidebar.expanded .sidebar-header h2,
+            .sidebar.expanded .menu-item span,
+            .sidebar.expanded .menu-label,
+            .sidebar.expanded .dropdown-item span {
+                display: block;
+            }
+
+            .sidebar.expanded .menu-item {
+                justify-content: flex-start;
+                padding: 12px 20px;
+            }
+
+            .sidebar.expanded .menu-item i {
+                margin-right: 10px;
+            }
+
+            .sidebar.expanded .dropdown-item {
+                justify-content: flex-start;
+                padding: 10px 20px 10px 45px;
+            }
+
+            .sidebar.expanded .dropdown-item i {
+                margin-right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2><i class="fas fa-chart-line"></i> Dashboard</h2>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-label">Menu Utama</div>
+            <a href="#" class="menu-item active">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            
+            <!-- Analytics dengan Dropdown -->
+            <div class="menu-item dropdown-toggle" data-target="analytics-dropdown">
+                <i class="fas fa-chart-bar"></i>
+                <span>Analytics</span>
+                <i class="fas fa-chevron-right arrow"></i>
+            </div>
+            <div class="dropdown-menu" id="analytics-dropdown">
+                <a href="#" class="dropdown-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Sales Report</span>
+                </a>
+                <a href="#" class="dropdown-item">
+                    <i class="fas fa-users"></i>
+                    <span>User Analytics</span>
+                </a>
+                <a href="#" class="dropdown-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Product Analytics</span>
+                </a>
+                <a href="#" class="dropdown-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Geographic Data</span>
+                </a>
+            </div>
+            
+            <a href="#" class="menu-item">
+                <i class="fas fa-users"></i>
+                <span>Users</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-shopping-cart"></i>
+                <span>Products</span>
+            </a>
+            
+            <!-- Settings dengan Dropdown -->
+            <div class="menu-item dropdown-toggle" data-target="settings-dropdown">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+                <i class="fas fa-chevron-right arrow"></i>
+            </div>
+            <div class="dropdown-menu" id="settings-dropdown">
+                <a href="#" class="dropdown-item">
+                    <i class="fas fa-user-cog"></i>
+                    <span>Account Settings</span>
+                </a>
+                <a href="#" class="dropdown-item">
+                    <i class="fas fa-bell"></i>
+                    <span>Notifications</span>
+                </a>
+                <a href="#" class="dropdown-item">
+                    <i class="fas fa-palette"></i>
+                    <span>Appearance</span>
+                </a>
+                <a href="#" class="dropdown-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Security</span>
+                </a>
+            </div>
+            
+            <div class="menu-label">Lainnya</div>
+            <a href="#" class="menu-item">
+                <i class="fas fa-question-circle"></i>
+                <span>Help & Support</span>
+            </a>
+            <a href="#" class="menu-item">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="header">
+            <h1>Dashboard Analytics</h1>
+            <button class="toggle-btn" id="toggleBtn">
+                <i class="fas fa-bars"></i> Toggle Sidebar
+            </button>
+        </div>
+        
+        <div class="content">
+            <h1>Selamat Datang di Dashboard Analytics</h1>
+            <p>Sidebar ini sekarang memiliki dropdown menu untuk bagian <strong>Analytics</strong> dan <strong>Settings</strong>. Klik pada menu tersebut untuk melihat opsi-opsi yang tersedia.</p>
+            
+            <p>Fitur yang ditambahkan:</p>
+            <ul>
+                <li>Dropdown menu untuk Analytics dengan 4 sub-menu</li>
+                <li>Dropdown menu untuk Settings dengan 4 sub-menu</li>
+                <li>Animasi panah yang berputar saat dropdown dibuka/tutup</li>
+                <li>Transisi smooth untuk dropdown</li>
+                <li>Tetap responsif di semua ukuran layar</li>
+            </ul>
+            
+            <p>Coba klik menu <strong>Analytics</strong> di sidebar untuk melihat dropdown-nya!</p>
+        </div>
+    </div>
+
+    <script>
+        // Toggle sidebar pada mode mobile
+        const toggleBtn = document.getElementById('toggleBtn');
+        const sidebar = document.getElementById('sidebar');
+
+        toggleBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('expanded');
+        });
+
+        // Dropdown functionality
+        const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+        
+        dropdownToggles.forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                // Toggle active class pada menu item
+                this.classList.toggle('active');
+                
+                // Toggle show class pada dropdown menu
+                const targetId = this.getAttribute('data-target');
+                const dropdownMenu = document.getElementById(targetId);
+                dropdownMenu.classList.toggle('show');
+                
+                // Close other dropdowns
+                dropdownToggles.forEach(otherToggle => {
+                    if (otherToggle !== this) {
+                        otherToggle.classList.remove('active');
+                        const otherTargetId = otherToggle.getAttribute('data-target');
+                        const otherDropdown = document.getElementById(otherTargetId);
+                        otherDropdown.classList.remove('show');
+                    }
+                });
+            });
+        });
+
+        // Set menu item aktif saat diklik
+        const menuItems = document.querySelectorAll('.menu-item:not(.dropdown-toggle)');
+        const dropdownItems = document.querySelectorAll('.dropdown-item');
+        
+        const setActiveItem = (item) => {
+            // Hapus kelas active dari semua menu
+            menuItems.forEach(i => i.classList.remove('active'));
+            dropdownItems.forEach(i => i.classList.remove('active'));
+            
+            // Tambahkan kelas active ke menu yang diklik
+            item.classList.add('active');
+        };
+        
+        menuItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                setActiveItem(this);
+            });
+        });
+        
+        dropdownItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                setActiveItem(this);
+            });
+        });
+    </script>
+</body>
+</html>
