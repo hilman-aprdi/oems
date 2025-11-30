@@ -36,7 +36,7 @@
         e.preventDefault();
         const formData = new FormData(e.target);
         
-        const response = await fetch('/auth/login', {
+        const response = await fetch('/user', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -49,9 +49,10 @@
         
         const result = await response.json();
         
-        alert(result.message)
+        alert(result.success)
         if(result.success) {
-          window.location.href = '/dashboard';
+          const userId = result.users[0].id;
+          window.location.href = `/users?id=${userId}`;
         }
       
         

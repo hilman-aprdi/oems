@@ -1,7 +1,7 @@
 const mysql = require('mysql2'); 
 
 const dbConfig = {
-  host: '0.0.0.0', 
+  host: 'localhost', 
   user: 'root',
   password: '',
   database: 'oems_db'

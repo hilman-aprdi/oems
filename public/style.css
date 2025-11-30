@@ -1,5 +1,6 @@
 * {
   transition: all 0.2s ease-in-out;
+  box-sizing: border-box;
 }
 
 body {
@@ -16,7 +17,7 @@ body {
 }
 
 .form-container {
-  max-width: 400px;
+  max-width: 270px;
   width: 70%;
   background: white;
   text-align: center;
@@ -25,8 +26,14 @@ body {
   border-radius: 10px;
 }
 
+#login-form {
+  display: grid;
+  gap: 20px;
+  justify-items: center;
+}
+
 .form-head {
-  margin-bottom: 25px;
+  width: 100%;
 }
 
 .form-head * {
@@ -34,35 +41,34 @@ body {
 }
 
 .form-line {
-  width: 100%; 
+  margin: auto;
+  width: 70%; 
   height: 2px;
-  background: grey;
+  background: black;
   margin-top: 20px;
 }
 
 .form-group {
-  margin:20px auto;
   width: 75%;
   display: flex;
-  gap: 4Px;
+  gap: 4px;
   align-items: center;
   justify-content: center;
-  border: 2px solid black;
+  outline: 2px solid black;
   border-radius: 4px;
 }
 
 .form-group:focus-within {
-  outline: 6px solid darkgrey;
+  outline: 3px solid darkgrey;
   border: 2px solid grey;
 }
 
 input {
-  display: block;
   width: 75%;
   border: none;
-  border-radius: 5px;
   height: 35px;
   box-sizing: border-box;
+  padding: 0;
 }
 
 input:focus {
@@ -75,14 +81,17 @@ input::placeholder {
 }
 
 .btn-primary {
+  display: flex;
+  gap: 7px;
+  justify-content: center;
   background: black;
   color: white;
   padding: 14px 0;
-  margin-top: 15px;
-  border-radius: 5px;
+  border-radius: 4px;
   font-weight: bold;
   width: 75%;
   border: none;
+  cursor: pointer;
 }
 
 .btn-primary:hover {
